@@ -32,3 +32,5 @@ Thumbs.db
 .factorypath
 .settings
 .vscode
+.m2
+.m2-local

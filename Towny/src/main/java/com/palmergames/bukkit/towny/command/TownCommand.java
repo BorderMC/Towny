@@ -2777,24 +2777,22 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 			return;
 		}
 
-		// Fire a cancellable event.
-		TownPreRenameEvent event = new TownPreRenameEvent(town, newName);
-		if (BukkitTools.isEventCancelled(event)) {
-			TownyMessaging.sendErrorMsg(sender, Translatable.of("msg_err_rename_cancelled"));
-			return;
-		}
-
-		double renameCost = TownySettings.getTownRenameCost();
-		if (TownyEconomyHandler.isActive() && renameCost > 0 && !town.getAccount().withdraw(renameCost, String.format("Town renamed to: %s", newName))) {
-			TownyMessaging.sendErrorMsg(sender, Translatable.of("msg_err_no_money", prettyMoney(renameCost)));
-			return;
-		}
-
-		// Put a cooldown on renaming the town. 
-		CooldownTimerTask.addCooldownTimer(uuid, CooldownType.TOWN_RENAME);
-
-		// Rename the town.
 		try {
+			// Fire a cancellable event.
+			TownPreRenameEvent event = new TownPreRenameEvent(town, newName);
+			if (BukkitTools.isEventCancelled(event))
+				throw new CancelledEventException(event);
+
+			double renameCost = TownySettings.getTownRenameCost();
+			if (TownyEconomyHandler.isActive() && renameCost > 0 && !town.getAccount().withdraw(renameCost, String.format("Town renamed to: %s", newName))) {
+				TownyMessaging.sendErrorMsg(sender, Translatable.of("msg_err_no_money", prettyMoney(renameCost)));
+				return;
+			}
+
+			// Put a cooldown on renaming the town. 
+			CooldownTimerTask.addCooldownTimer(uuid, CooldownType.TOWN_RENAME);
+
+			// Rename the town.
 			townyUniverse.getDataSource().renameTown(town, newName);
 			town = townyUniverse.getTown(newName);
 			// This should never happen
