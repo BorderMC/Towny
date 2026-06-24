@@ -34,3 +34,5 @@ Thumbs.db
 .vscode
 .m2
 .m2-local
+
+# mvn -DskipTests package

@@ -30,7 +30,7 @@ commands:
         aliases: []
         description: Towny's Plot command, see /plot ?
     resident:
-        aliases: [res, p, player]
+        aliases: [res, player]
         description: Towny's Resident command, see /res ?
     town:
         aliases: [t]
